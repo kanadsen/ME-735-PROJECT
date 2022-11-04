@@ -158,7 +158,6 @@ function World(props) {
                 <Select name = "mazes" id = "mazes" displayEmpty onChange = {e => handleMazeChange(e)}>
                     <MenuItem>Select Maze</MenuItem>
                     <MenuItem value = "randomMaze">Random Maze</MenuItem>
-                    <MenuItem value = "recursiveDivision">Recursive Division</MenuItem>
                 </Select>
             </div>
             <div className = "header_items">
@@ -176,7 +175,7 @@ function World(props) {
                         }, 1000);
                     }}
                     >
-                    Visualize
+                Visualize
                 </AwesomeButtonProgress>
             </div>
             <div className = "header_items">
@@ -241,15 +240,11 @@ function World(props) {
             size = "medium"
             ripple = {true}
             >
-        Reset Agent
+        Colour Reset
         </AwesomeButton>
         </div>
         </div>
         <Tutorial />
-        <Settings  
-            configureSettings = {configureSettings}
-           
-        />
         <Canvas colorManagement 
         camera={
             {

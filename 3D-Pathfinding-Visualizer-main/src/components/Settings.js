@@ -206,9 +206,7 @@ function Settings(props)
                         </tr>
                     <tr>
                         <td></td>
-                        <td>
-                            <SettingsLogo id = "settings_icon"/>  
-                        </td>
+                        
                     </tr>
                 </tbody>
         </table>
