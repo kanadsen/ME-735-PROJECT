@@ -17,10 +17,10 @@ The father of pathfinding algorithms, it creates a tree of shortest paths from t
 * **A\* Search algorithm** (weighted) <br>
 One of the best and a popular technique used in path-finding and graph traversals with heuristic. <b>Guarantees</b> the shortest path!
 
-* **Breadth-First Search** (unwighted) <br>
+* **Breadth-First Search** (unweighted) <br>
 The algorithm starts at the tree root, and explores all of the neighbor nodes at the present depth prior to moving on to the nodes at the next depth level. <b>Guarantees</b> the shortest path!
 
-* **Depth-First Search** (unwighted) <br>
+* **Depth-First Search** (unweighted) <br>
 The algorithm starts at the root node and explores as far as possible along each branch before backtracking. <b>Does not guarantee</b> the shortest path!
 
 ### Maze generation
