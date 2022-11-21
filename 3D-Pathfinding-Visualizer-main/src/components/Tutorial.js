@@ -51,7 +51,7 @@ function Tutorial(props)
                 <div className = "info_socials" id = "gh_button">
                     <AwesomeButtonSocial
                         type="github"
-                        url= "www.github.com/kanadsen"
+                        url= "https://github.com/kanadsen/ME-735-PROJECT"
                         size = "small"
                     >
                         Github
@@ -66,15 +66,7 @@ function Tutorial(props)
                         LinkedIn
                     </AwesomeButtonSocial>
                 </div>
-                <div className = "info_socials" id = "buy_me_a_coffee">
-                    <AwesomeButton
-                        type="secondary"
-                        url="www.linkedin.com/in/kanad-sen-868968167"
-                        size = "large"
-                    >
-                        About this project
-                    </AwesomeButton>
-                </div>
+                
                 <InfoLogo id = "info_icon"/>
             </div>
         </div>
