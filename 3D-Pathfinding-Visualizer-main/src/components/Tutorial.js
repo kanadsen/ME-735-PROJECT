@@ -1,14 +1,12 @@
+// Profile view and tutorial
+
 import React from 'react'
 import {  AwesomeButton, AwesomeButtonSocial } from 'react-awesome-button';
 import "react-awesome-button/dist/styles.css";
 import { ReactComponent as InfoLogo } from '../assets/info.svg';
 
-function Tutorial(props) {
-    //function color_to_RGB_string(color){
-	//	return `rgb(${color.r*255}, ${color.g*255}, ${color.b*255})`;
-    //}
-
-    return (
+function Tutorial(props)
+ {    return (
         <div className = "info_container">
             <h1 id = "info_title">Pathfinder Visualizer Information</h1>
             <div className = "legend_table">
@@ -53,10 +51,29 @@ function Tutorial(props) {
                 <div className = "info_socials" id = "gh_button">
                     <AwesomeButtonSocial
                         type="github"
-                        url="https://github.com/kanadsen/ME-735-PROJECT"
+                        url= "www.github.com/kanadsen"
                         size = "small"
                     >
+                        Github
                     </AwesomeButtonSocial>
+                </div>
+                <div className = "info_socials" id = "linkedin">
+                    <AwesomeButtonSocial
+                        type="linkedin"
+                        url="www.linkedin.com/in/kanad-sen-868968167"
+                        size = "small"
+                    >
+                        LinkedIn
+                    </AwesomeButtonSocial>
+                </div>
+                <div className = "info_socials" id = "buy_me_a_coffee">
+                    <AwesomeButton
+                        type="secondary"
+                        url="www.linkedin.com/in/kanad-sen-868968167"
+                        size = "large"
+                    >
+                        About this project
+                    </AwesomeButton>
                 </div>
                 <InfoLogo id = "info_icon"/>
             </div>

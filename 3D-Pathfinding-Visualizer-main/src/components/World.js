@@ -1,28 +1,27 @@
 import React, { useState, useRef } from 'react';
 import Grid from './Grid';
-import Mars from './Mars';
 import { Canvas } from 'react-three-fiber';
 import Floor from './Floor';
 import Controls from './Controls'; 
 import { Button, Select, MenuItem } from '@material-ui/core'
-import BorderClearIcon from '@material-ui/icons/BorderClear';
-import TerrainIcon from '@material-ui/icons/Terrain';
-import UndoIcon from '@material-ui/icons/Undo';
-import { spacing } from '@material-ui/system';
 import { makeStyles } from '@material-ui/core/styles';
-import Tutorial from './Tutorial';
-import Settings from './Settings';
 import { AwesomeButton, AwesomeButtonProgress } from 'react-awesome-button';
+import Tutorial from './Tutorial';
 import "react-awesome-button/dist/styles.css";
 
-var name2=prompt();
+// Take user input
+const strow = parseInt(prompt("Enter Start Row","5"));
+const stcol = parseInt(prompt("Enter Start Column","5"));
+const edrow = parseInt(prompt("Enter End Row","25"));
+const edcol = parseInt(prompt("Enter End Column","25"));
+
 //<OrbitControls enabled = {!worldSetup} />
-function World(props) {
+function World(props) 
+{
    let width = window.innerWidth;
    let height = window.innerHeigh;
-
-
-
+  
+   // defining current states
    const [selectedAlgorithm,  setSelectedAlgorithm] = useState({});     // keeps track of the algorithm we choose
    const [runState, setRunState] = useState(false);                     //when runState is true the visualizer algorithm is running
    const [resetCamera, setResetCamera] = useState(false);               //when resetCamera is true we reset the camera position
@@ -35,12 +34,11 @@ function World(props) {
   
    
    const [applyingSettings, setApplyingSettings] = useState(false);
-   const [settingsConfig, setConfig] = useState({
-       epochs: 1000,
-       startRow: 10,
-       startCol: 10,
-       finishRow: 25,
-       finishCol: 25, 
+   const [settingsConfig] = useState({
+       startRow: strow,
+       startCol: stcol,
+       finishRow: edrow,
+       finishCol: edcol, 
    })
 
    
@@ -75,24 +73,11 @@ function World(props) {
    function stopClearWalls(){
        setClearWalls(false);
    }
-   
-   function configureSettings(userEpochs,userStartRow,userStartCol,userFinishRow,userFinishCol,userLearningRate,userAgentCuriosity){
-       setConfig({
-           epochs: Number(userEpochs),
-           startRow: Number(userStartRow),
-           startCol: Number(userStartCol),
-           finishRow: Number(userFinishRow),
-           finishCol: Number(userFinishCol),
-           
-       });
-       setApplyingSettings(true)
-       
-   }
    function finishApplyingSettings(){
        setApplyingSettings(false);
    }
    
-
+    // function to handle toggle bars
     function handleOnChange(event){
        if(event.target.value !== undefined){
            setAlgo(false);
@@ -129,17 +114,21 @@ function World(props) {
            })
        }
    }
-   function updateResetStatus(){
+
+   function updateResetStatus()
+   {
        setResetCamera(false);
    }
-   function handleMazeChange(event){
+   function handleMazeChange(event)
+   {
        setSelectedMazeAlgorithm(event.target.value);
    }
-   function stopMazeSelection(){
+   function stopMazeSelection()
+   {
        setSelectedMazeAlgorithm("");
    }
 
-
+    // button creation
     return (
         <>
         <div className = "header" align = "center" >
@@ -184,7 +173,7 @@ function World(props) {
                     size = "medium"
                     disabled = {runState}
                     loadingLabel = "Clearing Path..."
-                    resultLabel = "Path Cleared :-)"
+                    resultLabel = "Path Cleared"
                     ripple = {true}
                     action={(element, next) => {
                         setTimeout(() => {
@@ -202,7 +191,7 @@ function World(props) {
                     size = "medium"
                     disabled = {runState}
                     loadingLabel = "Clearing Walls..."
-                    resultLabel = "Walls Cleared :-)"
+                    resultLabel = "Walls Cleared"
                     ripple = {true}
                     action={(element, next) => {
                         setTimeout(() => {
@@ -235,13 +224,6 @@ function World(props) {
         </Select>
         </div>
         <div className = "header_items">
-        <AwesomeButton 
-            type = "secondary"
-            size = "medium"
-            ripple = {true}
-            >
-        Colour Reset
-        </AwesomeButton>
         </div>
         </div>
         <Tutorial />
@@ -284,10 +266,7 @@ function World(props) {
             resetStatus = {resetCamera}
             selectedAlgorithm = {selectedAlgorithm}
             selectedMazeAlgorithm = {selectedMazeAlgorithm}
-            algorithmSpeed = {algorithmSpeed} 
-            //epochs = {settingsConfig.epochs}
-            //learningRate = {settingsConfig.learningRate}
-            //agentCuriosity = {settingsConfig.agentCuriosity}
+            algorithmSpeed = {algorithmSpeed}
             applyingSettings = {applyingSettings}
             settingsConfig = {settingsConfig}
             worldProperties = {
@@ -308,7 +287,7 @@ function World(props) {
                 colors: {
                     start: {r: 0, g: 1, b: 0 },
                     finish: {r: 1, g: 0, b: 0},
-                    wall: {r: 0.9, g: 0.109, b: 0.45},
+                    wall: {r: 0.58, g: 0.29, b: 0},
                     visited: {r: 0.329, g: 0.27, b: 0.968},
                     path: {r: 1, g: 1, b: 0},
                     default: {r: 1, g: 1, b: 1},

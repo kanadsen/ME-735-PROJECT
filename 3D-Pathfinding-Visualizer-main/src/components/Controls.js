@@ -3,7 +3,7 @@ import React, {useEffect, useRef } from 'react';
 import { useThree } from 'react-three-fiber';
 import TWEEN from '@tweenjs/tween.js';
 
-
+// reset initial status function
 function Controls(props) {
     const resetStatus = props.resetStatus;
     const {

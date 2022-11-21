@@ -5,10 +5,8 @@ import { tweenToColor, getNodesInShortestPathOrder } from './algorithms/helpers'
 import TWEEN from '@tweenjs/tween.js';
 import { weightedSearchAlgorithm } from "./algorithms/weightedSearchAlgorithm.js";
 import { unweightedSearchAlgorithm } from "./algorithms/unweightedSearchAlgorithm.js";
-import { randomMaze, recursiveDivisionMaze } from './algorithms/mazeAlgorithms';
+import { randomMaze} from './algorithms/mazeAlgorithms';
 import { useThree } from 'react-three-fiber';
-import * as tf from '@tensorflow/tfjs';
-import { math } from '@tensorflow/tfjs';
 
 
 
@@ -29,14 +27,10 @@ function Grid(props) {
   const selectedAlgorithm = props.selectedAlgorithm;
   const selectedMazeAlgorithm = props.selectedMazeAlgorithm;
   const runState = props.worldProperties.runState;
-  const trainTheAgent = props.worldProperties.trainAgent;
   const clearTheWalls = props.worldProperties.clearWalls; //rename this variable
   const clearThePath = props.worldProperties.clearPath; // rename this variable too
   const algorithmSpeed = props.algorithmSpeed;
-  const agentKnowledge = props.agentKnowledge;
-  const applyingSettings = props.applyingSettings;
 
-  const visualizeThePolicy = props.visualizeOptimalPolicy;
   
   const {
     camera,
@@ -62,14 +56,14 @@ function Grid(props) {
     if(props.worldProperties.runState === true)
     {
       
-      visualizeAlgorithm();
+      visualizeAlgorithm(); // Calls animation
       
     }
     else if(props.worldProperties.clearWalls === true){
-      clearWalls();
+      clearWalls(); // calls clear wall function
     }
     else if(props.worldProperties.clearPath === true){
-      clearPath();
+      clearPath(); //  call clearpath function
     }
     else if(props.selectedMazeAlgorithm === "randomMaze"){
       clearPath();
@@ -77,36 +71,16 @@ function Grid(props) {
       randomMaze(terrain.grid, nodesToAnimate, "wall");
       animateMaze(nodesToAnimate, "wall", 30);
     }
-    else if(props.selectedMazeAlgorithm === "recursiveDivision"){
-      clearPath();
-      let nodesToAnimate = [];
-      recursiveDivisionMaze(
-        terrain.grid, 
-        2, 
-        terrain.grid.length - 3,
-         2, 
-         terrain.grid.length - 3, 
-         "horizontal",
-         false,
-         nodesToAnimate,
-         "wall");
-
-         animateMaze(nodesToAnimate, "wall", 30)
-    }
   }, [runState, clearTheWalls, clearThePath, selectedMazeAlgorithm,]);
 
-
+  // information about mesh geometry
   const loader = useMemo(() => new THREE.TextureLoader().load(img,
     function(texture){
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.x = 30;
         texture.repeat.y = 30;
-        groundMaterial = new THREE.MeshLambertMaterial({
-          map: texture,
-          side: THREE.FrontSide,
-          vertexColors: THREE.FaceColors,
-        });
+        
         groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
 				groundMesh.receiveShadow = true;
     }), [img]);
@@ -139,43 +113,21 @@ function Grid(props) {
   function initializeGrid()
   {
     let tempGrid = []
-    for(let i = 0; i < 30; i++){
+    for(let i = 0; i < 30; i++)
+    {
         let currentRow = [];
         for(let j = 0; j < 30; j++){
-            let node = createNode(i, j);
+            let node = createNode(i, j);  // Creating grid by creating node object
             currentRow.push(node);
         }
         tempGrid.push(currentRow);
     }
-    /*var vertices = new Float32Array(5400).fill(0);
-
-    groundGeometry.setAttribute('color', new THREE.Float32BufferAttribute( vertices,3) );
-    vertices[0] = 0
-    vertices[1]= 1
-    vertices[2]= 0
-
-    
-
-    console.log(groundGeometry.getAttribute('color'))
-    const tween1 = new TWEEN.Tween(groundGeometry.getAttribute('color'))
-                    .to(new THREE.Float32BufferAttribute( vertices,2) ,9000)
-
-    tween1.start()
-
-    tween1.onUpdate(function (object: THREE.BufferAttribute | THREE.InterleavedBufferAttribute, elapsed: number){
-      groundGeometry.setAttribute('color',object)
-    })
-    
-   
-    //console.log(vertices)
-    groundGeometry.setAttribute('color', new THREE.Float32BufferAttribute( vertices,2) );*/
-
-    //setState(tempStateGrid)
-    renderLoop();
+   renderLoop();
    return tempGrid;
   }   
 
-  function createNode(row, col){
+  function createNode(row, col)
+  {
 
     let status = "default";
     let faces = {};
@@ -194,6 +146,7 @@ function Grid(props) {
     else if(row === props.worldProperties.finish.row && col === props.worldProperties.finish.col){
       status = "finish";
     }
+    // node object creation
     let node = {
         id: row * props.worldProperties.cols + col,
         row: row,
@@ -205,8 +158,6 @@ function Grid(props) {
         heuristicDistance: null,
         direction: null,
         weight: 0,
-        qValue: 0,
-        reward: 0,
         visits: 0,
         onceSpecial: false,
         previousNode: null,
@@ -225,34 +176,23 @@ function Grid(props) {
     }
     return node;
   }
-  function initStates(){
+  function initStates()
+  {
     let tempStateGrid = [];
     for(let row = 0; row < props.worldProperties.rows; row++){
       for(let col = 0; col < props.worldProperties.cols;col++){
         tempStateGrid.push([row,col]);
       }
     }
-    //console.log(tempStateGrid)
     return tempStateGrid;
   }
-  /*function initializeVisits(){
-    let visits = {}
-    let tempStates = initStates()
-    for(let row = 0; row < tempStates.length; row++){
-      for(let col = 0; col < tempStates[0].length; col++){
-        let state = tempStates[row][col]
-        visits[state] = 0;
-      }
-    }
-    return visits;
-  }*/
-
+  
   function renderLoop(){
     window.requestAnimationFrame(renderLoop);
-    //if(props.resetStatus){
+
       hoverLoop();
-   // }
-    TWEEN.update();
+  
+    TWEEN.update(); // update animation
   }
 
   function hoverLoop()
@@ -260,17 +200,19 @@ function Grid(props) {
     if(mouseIsUp || currentHoverNodeId === previousHoverNodeId){
       return;
     }
-    else{
+    else
+    {
       previousHoverNodeId = currentHoverNodeId;
       let nodeRow = Math.floor(currentHoverNodeId / props.worldProperties.rows);
       let nodeCol = currentHoverNodeId % props.worldProperties.cols
       if((nodeRow === props.worldProperties.start.row && nodeCol === props.worldProperties.start.col) 
-        || (nodeRow === props.worldProperties.finish.row && nodeCol === props.worldProperties.finish.col)){
+        || (nodeRow === props.worldProperties.finish.row && nodeCol === props.worldProperties.finish.col))
+        {
         return;
       }
-      else if(terrain.grid[nodeRow][nodeCol].status === "wall"){
+      else if(terrain.grid[nodeRow][nodeCol].status === "wall")
+      {
         terrain.grid[nodeRow][nodeCol].status = "default";
-       terrain.grid[nodeRow][nodeCol].reward = 0;
         terrain.grid[nodeRow][nodeCol].visits = 0;
         tweenToColor(terrain.grid[nodeRow][nodeCol], groundGeometry, [props.worldProperties.colors.default]);
       }
@@ -299,20 +241,16 @@ function Grid(props) {
         || (nodeId.nodeRow === props.worldProperties.finish.row && nodeId.nodeCol === props.worldProperties.finish.col)){
       return;
       }
-      else if(terrain.grid[nodeId.nodeRow][nodeId.nodeCol].status === "wall"){
-        terrain.grid[nodeId.nodeRow][nodeId.nodeCol].reward = 0;
+      else if(terrain.grid[nodeId.nodeRow][nodeId.nodeCol].status === "wall")
+      {
         terrain.grid[nodeId.nodeRow][nodeId.nodeCol].status = "default";
         tweenToColor(terrain.grid[nodeId.nodeRow][nodeId.nodeCol], groundGeometry, [props.worldProperties.colors.default]);
-        //console.log(terrain.grid[nodeId.nodeRow][nodeId.nodeCol]);
       }
       else
       {
-        terrain.grid[nodeId.nodeRow][nodeId.nodeCol].reward = -100;
         terrain.grid[nodeId.nodeRow][nodeId.nodeCol].status = "wall";
         tweenToColor(terrain.grid[nodeId.nodeRow][nodeId.nodeCol], groundGeometry, [props.worldProperties.colors.wall]);
-        //console.log(terrain.grid[nodeId.nodeRow][nodeId.nodeCol]);
       }
-      //console.log(terrain.grid)
     }
 
   }
@@ -335,7 +273,7 @@ function Grid(props) {
   {
     console.log("Dijkstra Dijkstra Dijkstra");
     clearPath();
-    let nodesToAnimate = [];
+    let nodesToAnimate = []; // array to store nodes to animate
     let processedSuccessfuly;
     const startNode = terrain.grid[props.worldProperties.start.row][props.worldProperties.start.col];
     const finishNode = terrain.grid[props.worldProperties.finish.row][props.worldProperties.finish.col];
@@ -363,16 +301,17 @@ function Grid(props) {
     }
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     //add conditions for unweighted and no paths found
-    //console.log(algorithmSpeed + " is the speed were using")
-    animateAlgorithm(nodesToAnimate, nodesInShortestPathOrder, algorithmSpeed);
-    
-    
+    console.log(algorithmSpeed + " is the speed were using")
+    animateAlgorithm(nodesToAnimate, nodesInShortestPathOrder, algorithmSpeed);  
   }
+  // function to be called to animate algorithm
   function animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder, timerDelay)
   {
-    window.alert("Paths traversed :"+visitedNodesInOrder.length+"   Shortest path :"+nodesInShortestPathOrder.length )
-    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-				if (i === visitedNodesInOrder.length) {
+    window.alert("Paths traversed :"+visitedNodesInOrder.length+"   Shortest path :"+nodesInShortestPathOrder.length ) // show number of nodes visited
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) 
+    {
+				if (i === visitedNodesInOrder.length) 
+        {   // animate shortest path
 					setTimeout(() => {
 						animateShortestPath(nodesInShortestPathOrder, 5 * timerDelay);
 					}, timerDelay * i);
@@ -388,10 +327,11 @@ function Grid(props) {
 				setTimeout(() => {
 					const node = visitedNodesInOrder[i];
 					if (!node) return;
+          // providing node object to tweentocolor for animation
 					tweenToColor(
 						node,
 						groundGeometry,
-						[{ r: 1.0, g: 0.321, b: 0.784 }, { r: 0.2 ,g: 0.5, b: 0.6 }],
+						[{ r: 0.5, g: 0.1, b:1 }, { r: 0.3 ,g:0, b: 0.8}],
 						300,
 						{ position: false }
 					);
@@ -399,107 +339,29 @@ function Grid(props) {
       }
       
   }
-  function animateShortestPath(nodesInShortestPathOrder, timerDelay){
+  // animate shortest path function
+  function animateShortestPath(nodesInShortestPathOrder, timerDelay)
+  {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
         tweenToColor(node, groundGeometry, [props.worldProperties.colors.path], undefined, {
           position: false,
         });
-        if (i === nodesInShortestPathOrder.length - 1) {
+        if (i === nodesInShortestPathOrder.length - 1) 
+        {
                 }
       }, timerDelay * i);
     }
     props.updateRunState(false);
-    //console.log(terrain.grid[5][5]);
   }
 
-  
-  
-  
-  function chooseAction(currentState,e_greedy)
+  // terrain control function
+  function resetTerrainConfig()
   {
-    var rwc = require("random-weighted-choice");
-    
-    let actionOptions = [
-      {weight: e_greedy * 10, id: "true"},
-      {weight: 10*(1 - e_greedy), id: "false"}
-    ];
-    let chosenOption = rwc(actionOptions)
-    let takingRandomAction = (chosenOption === "true");//true or false;
-    let actions = ["left","down","right","up"];
-    
-    if(takingRandomAction){
-      //console.log("Taking random action");
-      //let random_index = random.randint(0,len(actions) - 1)
-      while(true){
-        let randomIndex = Math.floor(Math.random() * actions.length)
-			  let selectedAction = actions[randomIndex]
-			  let actionChange = terrain.actions[selectedAction]
-        if(isValidState([actionChange[0] + currentState[0],actionChange[1] + currentState[1]])){
-          //console.log("When action is random action is: " + selectedAction)
-          return selectedAction;
-        }
-      }
-    }
-    else{
-      //console.log("Taking greedy action");
-      //let policyCandidates = new WeakMap();
-      let policyCandidates = {};
-      for(let action in terrain.actions){
-        let nextState = [terrain.actions[action][0]+currentState[0],terrain.actions[action][1]+currentState[1]]
-        //console.log(nextState)
-        if (isValidState(nextState)){
-				  //console.log(terrain.q_table);
-					policyCandidates[nextState] = terrain.q_table[nextState[0]][nextState[1]]
-          //policyCandidates.set(nextState,terrain.q_table[nextState[1]][nextState[0]]);
-        }
-      }
-      //let maxState = max(policy_candidates, key=policy_candidates.get)
-      let maxQValue = Number(Object.keys(policyCandidates).reduce((a, v) => Math.max(a, policyCandidates[v]), -Infinity));
-      let maxState = Object.keys(policyCandidates).filter(v => policyCandidates[v] === maxQValue);
-
-			//let maxQValue = policy_candidates[maxState]
-			let listOfMax = [];
-      for(let maxCandidate in policyCandidates){
-        if(policyCandidates[maxCandidate] === maxQValue){
-          let tempVals = maxCandidate.split(",").map(Number)
-          listOfMax.push(tempVals);
-        }
-      }
-      let randomIndex = Math.floor(Math.random() * listOfMax.length);
-			maxState = listOfMax[randomIndex];
-      //console.log(listOfMax)
-      //Now we can use the max_state(state with the maximum q value to find the actioned perfomed to get there)
-			let action_dy = maxState[0] - currentState[0];
-			let action_dx = maxState[1] - currentState[1];
-
-      for(let action in terrain.actions){
-        if(terrain.actions[action][0] === action_dy && terrain.actions[action][1] === action_dx){
-          return action;
-        }
-      }
-    }
-
-  }
-  function isValidState(nextState){
-    //console.log(nextState)
-    if (nextState[0] < 0 || nextState[0] >= props.worldProperties.rows || 
-        nextState[1] < 0 || nextState[1] >= props.worldProperties.cols){return false;}
-		return true
-  }
-  function getRecord(){
-    let record =  Array(props.worldProperties.rows).fill().map(() => Array(props.worldProperties.cols).fill(0))
-    for(let i = 0; i < terrain.states.length; i++){
-      let state = terrain.states[i]
-			record[state[0]][state[1]] = terrain.q_table[state[0]][state[1]]
-    }
-    //console.log(record)
-    return record;
-  }
-  function resetTerrainConfig(){
     for(let row = 0; row < 30; row++){
-      for(let col = 0; col < 30; col++){
+      for(let col = 0; col < 30; col++)
+      {
         if(terrain.grid[row][col].status === "wall"){
           continue;
         }
@@ -509,13 +371,11 @@ function Grid(props) {
         }
         else if(row === props.settingsConfig.finishRow && col === props.settingsConfig.finishCol){
           terrain.grid[row][col].status = "finish";
-          terrain.grid[row][col].reward = 100;
           terrain.grid[row][col].onceSpecial = true;
 
         }
         else{
           terrain.grid[row][col].status = "default";
-          terrain.grid[row][col].reward = 0;
           if(terrain.grid[row][col].onceSpecial){
           tweenToColor(terrain.grid[row][col], groundGeometry, [props.worldProperties.colors.default]);
           }
@@ -523,11 +383,11 @@ function Grid(props) {
         }
       }
     }
-    //console.log(terrain.records)
     props.finishApplyingSettings();
   }
 
-  function clearWalls(){
+  function clearWalls()
+  {
     for(let i = 0; i < props.worldProperties.rows; i++){
       for(let j = 0; j < props.worldProperties.cols; j++){
         if(terrain.grid[i][j].status === "wall" || terrain.q_table[i][j] < 0){

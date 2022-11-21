@@ -1,4 +1,6 @@
-export function unweightedSearchAlgorithm(grid, start, target, nodesToAnimate, name) {
+// unweighted algorithm function like bfs and dfs
+export function unweightedSearchAlgorithm(grid, start, target, nodesToAnimate, name) 
+{
     let structure = [start];
     let exploredNodes = {start: true};
     while (structure.length) {
