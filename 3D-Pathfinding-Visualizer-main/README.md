@@ -9,9 +9,8 @@
 
 <img src="./readmeAssets/readmeLogo.png" width="20%">
 
-*A Visualizer for some common pathfinding and machine learning algorithms in 3D.*
-## Live Demo
-A live interactive demo can be found [here](https://zmaqutu.github.io/3D-Pathfinding-Visualizer/).
+*A Visualizer for some common pathfinding algorithms in 3D.*
+
 <div align="center" >
   <img src="./readmeAssets/MLWorldSetup.gif" width="49%"> <img src="./readmeAssets/WorldSetup.gif" width="50%">
 </div>
