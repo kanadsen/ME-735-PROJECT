@@ -32,11 +32,11 @@ Method to generate a maze:
 * react-three-fiber
 * Tween.js
 
-###How to start the project
+### How to start the project
 
 1. run npm install 
 2. Change directory to src and open in integrated terminal
 3. run npm start
 
-###Contributed By
+### Contributed By
 KANAD SEN, SUSHRUT MESHRAM, ABHISHEK RAJ, BUSHRA ANASARI
